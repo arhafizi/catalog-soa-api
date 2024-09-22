@@ -1,8 +1,19 @@
 services:
-  db:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      - MONGO_DB=catalog-db
+    app:
+        build: .
+        ports:
+            - '3000:3000'
+        command: npm run start:dev
+        environment:
+            NODE_ENV: development
+            MONGO_URI: mongodb://db:27017/catalog-db
+        depends_on:
+            - db
+
+    db:
+        image: mongo
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            - MONGO_DB=catalog-db
