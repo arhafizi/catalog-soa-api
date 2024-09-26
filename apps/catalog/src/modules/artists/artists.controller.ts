@@ -6,10 +6,10 @@ import {
     Patch,
     Post
 } from '@nestjs/common';
-import { ParamObjId } from 'src/common/decorator/objectId.decorator';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { ParamObjId } from '../../common/decorator/objectId.decorator';
 
 @Controller('artists')
 export class ArtistsController {

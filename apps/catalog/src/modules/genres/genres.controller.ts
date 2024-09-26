@@ -8,10 +8,10 @@ import {
     Patch,
     Post
 } from '@nestjs/common';
-import { ParamObjId } from 'src/common/decorator/objectId.decorator';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { updateGenreDto } from './dto/update-genre.dto';
 import { GenresService } from './genres.service';
+import { ParamObjId } from '../../common/decorator/objectId.decorator';
 
 @Controller('genres')
 export class GenresController {

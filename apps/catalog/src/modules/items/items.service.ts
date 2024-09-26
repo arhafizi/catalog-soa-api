@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Artist } from 'src/modules/artists/schemas/artist.schema';
-import { Genre } from 'src/modules/genres/schemas/genre.schema';
+import { Artist } from '../artists/schemas/artist.schema';
+import { Genre } from '../genres/schemas/genre.schema';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './schemas/item.schema';
@@ -37,6 +37,15 @@ export class ItemsService {
             throw new NotFoundException('No item found with this ID');
         }
         return item;
+    }
+
+    async findMultipleItems(ids: string[]) {
+        const items = await this.itemModel.find({ _id: { $in: ids } }).exec();
+        if (!items.length) {
+            throw new BadRequestException('No valid items found');
+        }
+        // return items;
+        return items.map((item) => item._id.toString());
     }
 
     async create(itemDto: CreateItemDto): Promise<Item> {

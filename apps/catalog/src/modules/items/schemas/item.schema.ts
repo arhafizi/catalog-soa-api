@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-import { Artist } from 'src/modules/artists/schemas/artist.schema';
-import { Genre } from 'src/modules/genres/schemas/genre.schema';
+import { Artist } from '../../artists/schemas/artist.schema';
+import { Genre } from '../../genres/schemas/genre.schema';
 
 export type ItemDocument = HydratedDocument<Item>;
 

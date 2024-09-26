@@ -1,4 +1,3 @@
-// import { QueryDto } from 'src/common/query.dto';
 import {
     Body,
     Controller,
@@ -7,11 +6,12 @@ import {
     HttpCode,
     HttpStatus,
     Patch,
-    Post
+    Post,
 } from '@nestjs/common';
-import { ParamObjId } from 'src/common/decorator/objectId.decorator';
+import { ParamObjId } from '../../common/decorator/objectId.decorator';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { ValidateItemsDto } from './dto/validate-items.dto';
 import { ItemsService } from './items.service';
 
 @Controller('items')
@@ -37,6 +37,7 @@ export class ItemsController {
     editItem(@ParamObjId() id: string, @Body() dto: UpdateItemDto) {
         return this.service.update(id, dto);
     }
+
     @Delete('/:id')
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteById(@ParamObjId() id: string) {
@@ -46,5 +47,10 @@ export class ItemsController {
     @Delete('/prune')
     DeleteAll() {
         return this.service.removeAll();
+    }
+
+    @Post('validate')
+    async validateItems(@Body() dto: ValidateItemsDto) {
+        return this.service.findMultipleItems(dto.itemIds);
     }
 }
