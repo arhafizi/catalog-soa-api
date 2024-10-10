@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import {
     FastifyAdapter,
     NestFastifyApplication,
@@ -11,7 +12,18 @@ async function bootstrap() {
         CartModule,
         new FastifyAdapter(),
     );
-    
+    app.connectMicroservice<MicroserviceOptions>(
+        {
+            transport: Transport.NATS,
+            options: {
+                servers: [process.env.NATS_URL],
+            },
+        },
+        { inheritAppConfig: true },
+    );
+
+    await app.startAllMicroservices();
+
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
@@ -22,6 +34,7 @@ async function bootstrap() {
             },
         }),
     );
+
     await app.listen(3001, '0.0.0.0');
 }
 bootstrap();

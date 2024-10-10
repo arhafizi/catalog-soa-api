@@ -1,8 +1,10 @@
 import {
     BadRequestException,
+    Inject,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Artist } from '../artists/schemas/artist.schema';
@@ -17,6 +19,7 @@ export class ItemsService {
         @InjectModel(Item.name) private readonly itemModel: Model<Item>,
         @InjectModel(Artist.name) private readonly artistModel: Model<Artist>,
         @InjectModel(Genre.name) private readonly genreModel: Model<Genre>,
+        @Inject('ITEM_EVENTS') private readonly eventClient: ClientProxy,
     ) {}
 
     async findAll(): Promise<Item[]> {
@@ -62,6 +65,7 @@ export class ItemsService {
         const genre = await this.genreModel
             .findOne({ name: itemDto.genreName })
             .exec();
+
         if (!genre) {
             throw new BadRequestException(
                 `Genre with name "${itemDto.genreName}" not found`,
@@ -126,15 +130,21 @@ export class ItemsService {
     }
 
     async remove(id: string): Promise<Item> {
-        if (!id) throw new BadRequestException('Invalid ID');
+        await this.findOne(id);
 
-        const deletedItem = await this.itemModel
-            .findByIdAndUpdate(id, { active: false }, { new: true })
-            .exec();
+        const deletedItem = await this.itemModel.findByIdAndUpdate(
+            id,
+            {
+                active: false,
+            },
+            {
+                new: true,
+                runValidators: true,
+            },
+        );
 
-        if (!deletedItem) {
-            throw new NotFoundException(`Item with ID ${id} not found`);
-        }
+        this.eventClient.emit('item.sold_out', { id });
+
         return deletedItem;
     }
 

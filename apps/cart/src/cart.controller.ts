@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { CartService } from './providers/cart.service';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('api/carts')
 export class CartController {
@@ -39,5 +40,10 @@ export class CartController {
         @Param('id') id: string,
     ) {
         return this.service.updateQuantity(cartId, id, false);
+    }
+
+    @EventPattern('item.sold_out')
+    async handleItemSoldOut(@Payload() data: { id: string }) {
+        return this.service.removeSoldedItem(data.id);
     }
 }
