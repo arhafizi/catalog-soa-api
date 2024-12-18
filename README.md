@@ -1,85 +1,165 @@
+# NestJS Service-Oriented Architecture Project
+
+This project is a service-oriented architecture application built using NestJS, Fastify, MongoDB, Mongoose, Redis, and NATS as an event bus. It consists of two main services: **Catalog Service** and **Cart Service**. The Catalog Service manages items, while the Cart Service handles shopping cart functionalities. The project follows the CQRS (Command Query Responsibility Segregation) pattern in the Cart Service.
+
 <p align="center">
-  <img src="schema.svg" alt="Archtechture info" />
+  <img src="schema.svg" alt="Architecture Diagram" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Table of Contents
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Docker Compose Setup](#docker-compose-setup)
+- [Catalog Service](#catalog-service)
+- [Cart Service](#cart-service)
+- [Event Bus](#event-bus)
+- [CQRS Pattern](#cqrs-pattern)
+- [API Endpoints](#api-endpoints)
+- [Environment Variables](#environment-variables)
+- [License](#license)
 
-## Description
+## Technologies Used
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS**: A progressive Node.js framework for building efficient and scalable server-side applications.
+- **Fastify**: A fast and low-overhead web framework for Node.js.
+- **MongoDB**: A NoSQL database for storing data in a flexible, JSON-like format.
+- **Mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
+- **Redis**: An in-memory data structure store used as a database, cache, and message broker.
+- **NATS**: A lightweight, high-performance messaging system for service communication.
+- **CQRS**: A pattern that separates read and write operations for better scalability and performance.
 
-## Project setup
+## Getting Started
 
-```bash
-$ npm install
-```
+To get started with this project, follow these steps:
 
-## Compile and run the project
+1. **Clone the repository**
+2. **Install dependencies**:
+   ```bash
+   npm i
+   ```
 
-```bash
-# development
-$ npm run start
+3. **Set up environment variables**:
+   Create a `.env` file in the root directory and add the following variables:
+   ```env
+   MONGO_URI=<mongodb-uri>
+   NATS_URL=<nats-server-url>
+   REDIS_HOST=<redis-host>
+   REDIS_PORT=<redis-port>
+   ```
 
-# watch mode
-$ npm run start:dev
+4. **Run the services**:
+   You can run each service separately. For example, to run the Catalog Service:
+   ```bash
+   npm run start -- catalog
+   ```
+   And for the Cart Service:
+   ```bash
+   npm run start -- cart
+   ```
 
-# production mode
-$ npm run start:prod
-```
+## Docker Compose Setup
 
-## Run tests
+To run the application using Docker, you can use the provided `docker-compose.yml` file. This file sets up the necessary services, including MongoDB, Redis, and NATS.
 
-```bash
-# unit tests
-$ npm run test
+### Steps to Run with Docker Compose
 
-# e2e tests
-$ npm run test:e2e
+1. **Ensure Docker and Docker Compose are installed** on your machine.
 
-# test coverage
-$ npm run test:cov
-```
+2. **Navigate to the project directory** where the `docker-compose.yml` file is located.
 
-## Resources
+3. **Run the following command** to start all services:
+   ```bash
+   docker-compose up --build
+   ```
 
-Check out a few resources that may come in handy when working with NestJS:
+4. **Access the services**:
+   - Catalog Service: [http://localhost:3000](http://localhost:3000)
+   - Cart Service: [http://localhost:3001](http://localhost:3001)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Docker Compose Configuration
 
-## Support
+Here’s a brief overview of the services defined in the `docker-compose.yml` file:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- **catalog**: The Catalog Service, which manages items.
+- **cart**: The Cart Service, which handles shopping cart functionalities.
+- **db**: MongoDB instance for storing item data.
+- **cartsdb**: Redis instance for managing cart sessions.
+- **catalog_esb**: NATS server for event-driven communication between services.
 
-## Stay in touch
+## Catalog Service
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The Catalog Service is responsible for managing items. It provides endpoints to create, read, update, and delete items. It also emits events when an item is sold out.
+
+### Key Features
+
+- **CRUD Operations**: Create, read, update, and delete items.
+- **Event Emission**: Emits an event when an item is sold out.
+
+### API Endpoints
+
+- `GET /api/items`: Retrieve all active items.
+- `GET /api/items/:id`: Retrieve a specific item by ID.
+- `POST /api/items`: Create a new item.
+- `PATCH /api/items/:id`: Update an existing item.
+- `DELETE /api/items/:id`: Soft delete an item (mark as inactive).
+- `DELETE /api/items/prune`: Delete all items.
+- `POST /api/items/validate`: Validate multiple items by their IDs.
+
+## Cart Service
+
+The Cart Service manages shopping cart functionalities. It allows users to create carts, add or remove items, and handle item sold-out events.
+
+### Key Features
+
+- **CQRS Implementation**: Uses the CQRS pattern for better separation of concerns.
+- **Event Handling**: Listens for item sold-out events and updates carts accordingly.
+
+### API Endpoints
+
+- `GET /api/carts/:id`: Retrieve a specific cart by ID.
+- `POST /api/carts`: Create a new cart.
+- `PATCH /api/carts/:cartId/items/:id`: Add an item to the cart.
+- `DELETE /api/carts/:cartId/items/:id`: Remove an item from the cart.
+
+### Providers
+
+- **CatalogClientService**: Communicates with the Catalog Service to enrich cart items and validate item IDs.
+- **CartRepository**: Manages cart sessions in Redis.
+- **Command Handlers**: Handles commands for creating carts, retrieving carts, and updating item quantities.
+
+## Event Bus
+
+Both services communicate through NATS as an event bus. When an item is deleted in the Catalog Service, it emits an `item.sold_out` event, which the Cart Service listens for to remove the item from all active carts.
+
+## CQRS Pattern
+
+The Cart Service implements the CQRS pattern, separating the command (write) and query (read) operations. This allows for better scalability and maintainability of the service.
+
+### Commands and Queries
+
+- **Commands**:
+  - `CreateCartCommand`: Command to create a new cart with specified item IDs and user email.
+  - `UpdateCartItemQuantityCommand`: Command to update the quantity of an item in the cart.
+  
+- **Queries**:
+  - `GetCartQuery`: Query to retrieve a specific cart by its ID.
+
+### Command Handlers
+
+- **CreateCartHandler**: Handles the creation of a new cart, ensuring that the user does not already have an existing cart and validating item IDs.
+- **GetCartHandler**: Handles the retrieval of a cart, enriching the cart items with additional data from the Catalog Service.
+- **UpdateCartItemQuantityHandler**: Handles the updating of item quantities in the cart, ensuring that item IDs are valid and managing the addition or removal of items.
+
+## Environment Variables
+
+Make sure to set the following environment variables in your `.env` file:
+
+- `MONGO_URI`: MongoDB connection string.
+- `NATS_URL`: NATS server URL.
+- `REDIS_HOST`: Redis server host.
+- `REDIS_PORT`: Redis server port.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
